@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pixel Art Downscaler</title>
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <h1>Pixel Art Downscaler</h1>
+        <p>
+          Convert AI-generated fake pixel art into real small PNGs with true transparency.
+          Upload, crop, pick background colors, set output size, and download.
+        </p>
+      </header>
+
+      <div class="layout">
+        <div class="main-column">
+          <section class="panel">
+            <h2>Source</h2>
+            <div id="drop-zone">
+              <p>Drop an image here or click to upload</p>
+              <canvas id="source-canvas" hidden></canvas>
+            </div>
+            <input id="file-input" type="file" accept="image/*" />
+          </section>
+
+          <section class="panel">
+            <h2>Result</h2>
+            <div class="preview-wrap">
+              <canvas id="preview-canvas" width="32" height="32"></canvas>
+              <p class="preview-note">Preview is scaled up with pixelated rendering</p>
+            </div>
+            <p class="meta">Output: <span id="preview-dimensions">—</span></p>
+            <p class="meta">Block size: <span id="block-size">—</span></p>
+            <p id="aspect-warning" class="warning" hidden>
+              Crop aspect ratio differs from output — pixels may appear stretched.
+            </p>
+          </section>
+        </div>
+
+        <aside class="sidebar">
+          <section class="panel">
+            <h2>Output size</h2>
+            <div class="settings-group">
+              <div class="row">
+                <div style="flex: 1">
+                  <label for="output-width">Width</label>
+                  <input id="output-width" type="number" min="1" max="512" value="32" />
+                </div>
+                <div style="flex: 1">
+                  <label for="output-height">Height</label>
+                  <input id="output-height" type="number" min="1" max="512" value="32" />
+                </div>
+              </div>
+              <label class="checkbox-row">
+                <input id="link-aspect" type="checkbox" checked />
+                Lock to crop aspect ratio
+              </label>
+              <div class="preset-row">
+                <button type="button" class="btn btn-small" data-preset="16">16</button>
+                <button type="button" class="btn btn-small" data-preset="32">32</button>
+                <button type="button" class="btn btn-small" data-preset="64">64</button>
+                <button type="button" class="btn btn-small" data-preset="128">128</button>
+                <button type="button" class="btn btn-small" data-preset="256">256</button>
+                <button type="button" class="btn btn-small" data-preset="512">512</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2>Transparency</h2>
+            <div class="settings-group">
+              <label for="tolerance">Color tolerance: <span id="tolerance-value">20</span></label>
+              <input id="tolerance" type="range" min="0" max="80" value="20" />
+            </div>
+            <div id="color-list"></div>
+            <div class="button-row">
+              <button id="pick-color" type="button" class="btn">Pick color</button>
+              <button id="checkerboard-preset" type="button" class="btn">Checkerboard preset</button>
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2>Download</h2>
+            <div class="settings-group">
+              <label for="filename">Filename</label>
+              <input id="filename" type="text" value="pixelart-32x32.png" />
+            </div>
+            <button id="download" type="button" class="btn btn-primary" disabled style="width: 100%">
+              Download PNG
+            </button>
+          </section>
+        </aside>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
