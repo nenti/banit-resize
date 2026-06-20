@@ -10,7 +10,9 @@ and lead them safely home to bed.
 ## How to play
 
 1. Open `index.html` in any modern browser — no build step, no install.
-2. **Move** with the arrow keys / `WASD`, or **drag** on the field (mouse or touch).
+2. **Move** with the arrow keys / `WASD` on desktop, or on a phone **touch and
+   drag anywhere** on the field — it acts as a virtual joystick (drag in the
+   direction you want to go; your finger stays clear of the hen).
 3. Touch a **chick 🐥** to add it to your trailing line — they follow you in a
    long snake.
 4. Lead the line into the **henhouse 🏠** to tuck the chicks in. Collect and

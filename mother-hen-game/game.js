@@ -69,7 +69,12 @@ let snowy = false;
 
 // ---- Input ----
 const keys = new Set();
-let pointer = null; // {x,y} target when dragging
+// Virtual joystick: record where the drag started and where it is now, then
+// steer the hen in the drag *direction* — this keeps the finger off the hen.
+let padOrigin = null;
+let padCur = null;
+const PAD_RADIUS = 46;
+const PAD_DEADZONE = 12;
 
 window.addEventListener("keydown", (e) => {
   const k = e.key.toLowerCase();
@@ -88,17 +93,19 @@ function canvasPoint(evt) {
 }
 function onPointerDown(e) {
   if (state !== "playing") return;
-  pointer = canvasPoint(e);
+  padOrigin = canvasPoint(e);
+  padCur = padOrigin;
   e.preventDefault();
 }
 function onPointerMove(e) {
-  if (pointer) {
-    pointer = canvasPoint(e);
+  if (padOrigin) {
+    padCur = canvasPoint(e);
     e.preventDefault();
   }
 }
 function onPointerUp() {
-  pointer = null;
+  padOrigin = null;
+  padCur = null;
 }
 canvas.addEventListener("mousedown", onPointerDown);
 canvas.addEventListener("mousemove", onPointerMove);
@@ -165,7 +172,8 @@ function startRound() {
   magnetItem = null;
   mushroom = null;
   particles = [];
-  pointer = null;
+  padOrigin = null;
+  padCur = null;
 
   hen = { x: COOP.x + COOP.w + 60, y: COOP.y + COOP.h + 60, dir: 1 };
   trail = [];
@@ -252,11 +260,12 @@ function update(dt) {
   if (keys.has("arrowup") || keys.has("w")) dy -= 1;
   if (keys.has("arrowdown") || keys.has("s")) dy += 1;
 
-  if (pointer && dx === 0 && dy === 0) {
-    const ddx = pointer.x - hen.x;
-    const ddy = pointer.y - hen.y;
+  if (padOrigin && padCur && dx === 0 && dy === 0) {
+    // joystick: steer in the direction dragged away from the touch origin
+    const ddx = padCur.x - padOrigin.x;
+    const ddy = padCur.y - padOrigin.y;
     const d = Math.hypot(ddx, ddy);
-    if (d > 6) {
+    if (d > PAD_DEADZONE) {
       dx = ddx / d;
       dy = ddy / d;
     }
@@ -605,6 +614,23 @@ function render() {
     ctx.fill();
   }
   ctx.globalAlpha = 1;
+
+  // virtual joystick indicator (touch / mouse drag)
+  if (state === "playing" && padOrigin && padCur) {
+    ctx.beginPath();
+    ctx.arc(padOrigin.x, padOrigin.y, PAD_RADIUS, 0, Math.PI * 2);
+    ctx.strokeStyle = "rgba(255,255,255,0.45)";
+    ctx.lineWidth = 4;
+    ctx.stroke();
+    const ddx = padCur.x - padOrigin.x;
+    const ddy = padCur.y - padOrigin.y;
+    const d = Math.hypot(ddx, ddy) || 1;
+    const r = Math.min(PAD_RADIUS, d);
+    ctx.beginPath();
+    ctx.arc(padOrigin.x + (ddx / d) * r, padOrigin.y + (ddy / d) * r, 18, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(255,255,255,0.7)";
+    ctx.fill();
+  }
 }
 
 // ---- Main loop ----
