@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Mother Hen — gather the chicks!</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div id="game-shell">
+      <header id="hud">
+        <div class="hud-item" id="hearts" aria-label="lives">❤️❤️❤️</div>
+        <div class="hud-item" id="chicks">🐥 0 / 14</div>
+        <div class="hud-item" id="round">Round 1</div>
+        <div class="hud-item hud-power" id="magnet-power" hidden>🧲 <span id="magnet-time">0</span>s</div>
+      </header>
+
+      <div id="canvas-wrap">
+        <canvas id="game" width="640" height="640"></canvas>
+
+        <!-- Overlays -->
+        <div class="overlay" id="overlay-start">
+          <h1>🐔 Mother Hen</h1>
+          <p>
+            You are the mother hen. Gather all your wandering
+            <strong>chicks 🐥</strong> — touch one and it lines up behind you
+            in a long trail. Lead them safely into the
+            <strong>henhouse 🏠</strong> to tuck them in.
+          </p>
+          <ul class="tips">
+            <li>🦅 Don't let the <strong>eagle</strong> touch you — your chicks scatter and you lose a heart.</li>
+            <li>🧲 Grab a <strong>magnet</strong> to pull nearby chicks in (it vanishes fast!).</li>
+            <li>🍄 Never eat the <strong>mushroom</strong> — it costs you a heart.</li>
+            <li>🌸 Flowers are harmless. 🚧 Don't crash into the fence.</li>
+          </ul>
+          <p class="controls">Move: <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> or <kbd>WASD</kbd> &nbsp;•&nbsp; or drag on the field (touch / mouse)</p>
+          <button class="btn" id="btn-start">Start</button>
+        </div>
+
+        <div class="overlay" id="overlay-message" hidden>
+          <h1 id="msg-title">Round complete!</h1>
+          <p id="msg-body"></p>
+          <button class="btn" id="btn-next">Continue</button>
+        </div>
+      </div>
+
+      <p class="credit">A little game dreamed up in a voice memo. Made with 🐥.</p>
+    </div>
+
+    <script type="module" src="./game.js"></script>
+  </body>
+</html>
