@@ -49,12 +49,14 @@ let round = 1;
 let hearts = 3;
 let invuln = 0;
 
-let hen;
-let trail; // array of caught chicks {x,y}
-let henHistory; // recent hen positions for snake-style following
-let freeChicks; // wandering chicks not yet caught
-let delivered; // chicks safely tucked into the coop
-let totalChicks;
+// These are initialized empty so render() is safe to run before the first
+// startRound() (the rAF loop starts at page load, while state === "start").
+let hen = null;
+let trail = []; // array of caught chicks {x,y}
+let henHistory = []; // recent hen positions for snake-style following
+let freeChicks = []; // wandering chicks not yet caught
+let delivered = 0; // chicks safely tucked into the coop
+let totalChicks = 0;
 
 let eagle;
 let magnetItem = null; // pickup lying on the field
@@ -635,12 +637,25 @@ function render() {
 
 // ---- Main loop ----
 let last = performance.now();
+let loopBroken = false;
 function frame(now) {
   let dt = (now - last) / 1000;
   last = now;
   if (dt > 0.05) dt = 0.05; // clamp big gaps (tab switches)
-  update(dt);
-  render();
+  try {
+    update(dt);
+    render();
+  } catch (err) {
+    // A thrown error must not silently kill the animation loop (which would
+    // freeze the game with no feedback). Surface it once, then keep going.
+    if (!loopBroken) {
+      loopBroken = true;
+      console.error("Mother Hen loop error:", err);
+      msgTitle.textContent = "⚠️ Something went wrong";
+      msgBody.textContent = String((err && err.message) || err);
+      overlayMessage.hidden = false;
+    }
+  }
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
